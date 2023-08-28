@@ -1,0 +1,21 @@
+.pagination {
+  margin: 30px 10px;
+}
+
+button {
+  font-size: 1rem;
+  width: 100px;
+  text-align: center !important;
+  border: 2px solid var(--white);
+  border-radius: 15px;
+  background-color: var(--dark-green);
+  color: var(--white);
+  transition: background-color 0.3s, color 0.3s;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--white);
+  color: var(--dark-green);
+  border: 2px solid var(--dark-green);
+}
