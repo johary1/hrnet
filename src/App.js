@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { EmployeeProvider } from "./context/EmployeeContext";
 
 // pages
 
@@ -16,13 +17,15 @@ const App = () => {
   return (
     <BrowserRouter>
       <Header />
-      <Routes>
-        <Route index element={<HomePage />} />
-        <Route path="/createemployee" element={<CreateEmployee />} />
-        <Route path="/currentemployees" element={<CurrentEmployees />} />
-        <Route path="*" element={<Error404 />} />
-      </Routes>
-      {/* <Footer /> */}
+      <EmployeeProvider>
+        <Routes>
+          <Route index element={<HomePage />} />
+          <Route path="/createemployee" element={<CreateEmployee />} />
+          <Route path="/currentemployees" element={<CurrentEmployees />} />
+          <Route path="*" element={<Error404 />} />
+        </Routes>
+        {/* <Footer /> */}
+      </EmployeeProvider>
     </BrowserRouter>
   );
 };

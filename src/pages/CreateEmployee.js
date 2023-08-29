@@ -1,14 +1,18 @@
 import React, { useState, useRef } from "react";
-import { Container, Form, Button } from "react-bootstrap";
+import { Container, Form, Button, Modal } from "react-bootstrap";
 import departmentsData from "../data/departments.json";
 import statesData from "../data/states.json";
 import "./style/CreateEmployee.css";
+import "./style/MyModal.css";
 import { validateForm } from "../utils";
-import Select from "../components/Select";
 import DatePickerWrapper from "../components/DatePickerWrapper";
 import FormInput from "../components/FormInput";
+import { useEmployeeContext } from "../context/EmployeeContext";
 
 const CreateEmployee = () => {
+  // Use the context hook
+  const { addEmployee } = useEmployeeContext();
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const selectedDOBRef = useRef(null);
@@ -17,8 +21,9 @@ const CreateEmployee = () => {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [zipCode, setZipCode] = useState("");
-  const selectedDepartmentRef = useRef("");
+  const [department, setDepartment] = useState("");
   const [formErrors, setFormErrors] = useState({});
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleInputChange = (event, inputSetter, errorKey) => {
     const inputValue = event.target.value;
@@ -42,7 +47,7 @@ const CreateEmployee = () => {
       city,
       state,
       zipCode,
-      selectedDepartmentRef.current
+      department
     );
 
     setFormErrors(errors);
@@ -50,10 +55,10 @@ const CreateEmployee = () => {
     if (isValid) {
       // Convert Date objects to ISO strings
       const isoSelectedDOB = selectedDOBRef.current
-        ? selectedDOBRef.current.toISOString()
+        ? selectedDOBRef.current.toISOString().split("T")[0]
         : null;
       const isoSelectedStartDate = selectedStartDateRef.current
-        ? selectedStartDateRef.current.toISOString()
+        ? selectedStartDateRef.current.toISOString().split("T")[0]
         : null;
 
       // Create the employee data object
@@ -66,16 +71,28 @@ const CreateEmployee = () => {
         city,
         state,
         zipCode,
-        selectedDepartment: selectedDepartmentRef.current.toString(),
+        department,
       };
 
-      //console.log(employeeData);
+      // Retrieve existing data from localStorage
+      const existingEmployeeData = localStorage.getItem("employees");
 
-      // Serialize the employeeData object
-      const serializedEmployeeData = JSON.stringify(employeeData);
+      // Parse existing data into an array or create an empty array if it doesn't exist yet
+      const employeesArray = existingEmployeeData
+        ? JSON.parse(existingEmployeeData)
+        : [];
 
-      localStorage.setItem("employeeData", serializedEmployeeData);
-      alert("New employee was successfully added!");
+      // Add the new employee data to the array
+      employeesArray.push(employeeData);
+
+      // Stringify the updated array and store it back in localStorage
+      localStorage.setItem("employees", JSON.stringify(employeesArray));
+
+      // Add the new employee to the context
+      addEmployee(employeeData);
+
+      // Show the success modal
+      setShowSuccessModal(true);
 
       // Clear form fields
       setFirstName("");
@@ -86,9 +103,13 @@ const CreateEmployee = () => {
       setCity("");
       setState("");
       setZipCode("");
-      selectedDepartmentRef.current = "";
+      setDepartment("");
       setFormErrors({});
     }
+  };
+
+  const handleCloseSuccessModal = () => {
+    setShowSuccessModal(false);
   };
 
   return (
@@ -218,37 +239,58 @@ const CreateEmployee = () => {
             <Form.Control.Feedback className="error-address" type="invalid">
               {formErrors.zipCode}
             </Form.Control.Feedback>
+
+            <Form.Control
+              id="department"
+              as="select"
+              value={department}
+              onChange={(e) => {
+                setDepartment(e.target.value);
+                if (e.target.value) {
+                  setFormErrors((prevErrors) => ({
+                    ...prevErrors,
+                    department: "",
+                  }));
+                }
+              }}
+              isInvalid={formErrors.department}
+            >
+              <option value="">Department</option>
+              {departmentsData.map((department) => (
+                <option key={department.value} value={department.value}>
+                  {department.value}
+                </option>
+              ))}
+            </Form.Control>
+            <Form.Control.Feedback className="error-address" type="invalid">
+              {formErrors.selectedDepartment}
+            </Form.Control.Feedback>
           </div>
         </Form.Group>
 
-        <Form.Group id="department">
-          <Form.Label>Department</Form.Label>
-          <Select
-            className="department-select"
-            options={departmentsData}
-            value={selectedDepartmentRef.current}
-            onChange={(value) => {
-              selectedDepartmentRef.current = value;
-              if (value) {
-                setFormErrors((prevErrors) => ({
-                  ...prevErrors,
-                  selectedDepartment: "",
-                }));
-              }
-            }}
-            placeholder="Department"
-            isInvalid={formErrors.selectedDepartment}
-          />
-          {formErrors.selectedDepartment && (
-            <div className="invalid-feedback">
-              {formErrors.selectedDepartment}
-            </div>
-          )}
-        </Form.Group>
         <Button className="save-btn" variant="primary" type="submit">
           Save
         </Button>
       </Form>
+      {/* Success Modal */}
+      <Modal
+        className="modal-container"
+        show={showSuccessModal}
+        onHide={handleCloseSuccessModal}
+      >
+        <Modal.Body className="modal-title">
+          <p>A new employee was successfully added!</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            className="close-btn"
+            variant="secondary"
+            onClick={handleCloseSuccessModal}
+          >
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 };

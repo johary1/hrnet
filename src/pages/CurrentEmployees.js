@@ -1,27 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react"; // Import useContext
 import { Container } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
-import employeesData from "../data/employees.json";
+import { useEmployeeContext } from "../context/EmployeeContext"; // Import the EmployeeContext
 import Select from "../components/Select";
 import FormSearch from "../components/FormSearch";
 import Pagination from "../components/Pagination";
 import "./style/CurrentEmployees.css";
 
 const CurrentEmployees = () => {
-  const [employees, setEmployees] = useState([]);
+  const { employees } = useEmployeeContext(); // Use the context hook to get employees data
   const [currentPage, setCurrentPage] = useState(1);
   const [employeesPerPage, setEmployeesPerPage] = useState(5);
 
-  const loadEmployees = () => {
-    setEmployees(employeesData);
-  };
   const handleEmployeesPerPageChange = (event) => {
     setEmployeesPerPage(event.target.value);
   };
-
-  useEffect(() => {
-    loadEmployees();
-  }, []);
 
   const columns = [
     {
@@ -34,7 +27,7 @@ const CurrentEmployees = () => {
     },
     {
       name: "Start Date",
-      data: "startDate",
+      data: "selectedStartDate",
     },
     {
       name: "Department",
@@ -42,7 +35,7 @@ const CurrentEmployees = () => {
     },
     {
       name: "Date of Birth",
-      data: "dateOfBirth",
+      data: "selectedDOB",
     },
     {
       name: "Street",
@@ -116,12 +109,7 @@ const CurrentEmployees = () => {
             <tbody>
               {currentEmployees.map((employee, index) => (
                 <tr key={index}>
-                  {columns.slice(0, 4).map((column) => (
-                    <td key={column.name} className="sticky-cell">
-                      {employee[column.data]}
-                    </td>
-                  ))}
-                  {columns.slice(4).map((column) => (
+                  {columns.map((column) => (
                     <td key={column.name}>{employee[column.data]}</td>
                   ))}
                 </tr>

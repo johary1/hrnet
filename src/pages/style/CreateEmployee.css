@@ -81,19 +81,9 @@
 }
 
 #state,
-#zipCode {
-  width: calc(50% - 7.5px);
-}
-
+#zipCode,
 #department {
-  width: 100%;
-  height: 35px;
-  margin-top: -20px;
-}
-
-.department-select {
-  height: 35px;
-  margin-left: 20px;
+  width: calc(50% - 7.5px);
 }
 
 .save-btn {

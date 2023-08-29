@@ -10,8 +10,11 @@ const AddressForm = ({
   setState,
   zipCode,
   setZipCode,
+  department,
+  setDepartment,
   formErrors,
   statesData,
+  departmentsData,
 }) => (
   <Form.Group className="form-group" id="address">
     <Form.Label>Address</Form.Label>
@@ -63,6 +66,25 @@ const AddressForm = ({
       />
       <Form.Control.Feedback className="error-address" type="invalid">
         {formErrors.zipCode}
+      </Form.Control.Feedback>
+
+      {/* Department field */}
+      <Form.Control
+        id="department"
+        as="select"
+        value={department}
+        onChange={(e) => setDepartment(e.target.value)}
+        isInvalid={formErrors.department}
+      >
+        <option value="">Department</option>
+        {departmentsData.map((department) => (
+          <option key={department.value} value={department.value}>
+            {department.value}
+          </option>
+        ))}
+      </Form.Control>
+      <Form.Control.Feedback className="error-address" type="invalid">
+        {formErrors.department}
       </Form.Control.Feedback>
     </div>
   </Form.Group>
