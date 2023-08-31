@@ -40,7 +40,7 @@
   padding: 10px;
 }
 .navigation ul a li {
-  color: #b6b6b7;
+  color: black;
   transition: 0.2s;
   cursor: pointer;
 }

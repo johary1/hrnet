@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 
-const FormSearch = () => {
+const FormSearch = ({ onSearch }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = (event) => {
     event.preventDefault();
-    // handle search logic here
+    onSearch(searchTerm);
   };
 
   const handleSearchTermChange = (event) => {
-    setSearchTerm(event.target.value);
+    const newSearchTerm = event.target.value;
+    setSearchTerm(newSearchTerm);
+    onSearch(newSearchTerm);
   };
 
   return (
@@ -20,7 +22,7 @@ const FormSearch = () => {
         </span>
         <input
           placeholder="employees..."
-          type="text"
+          type="search"
           id="inlineFormInputGroup"
           className="form-control"
           value={searchTerm}

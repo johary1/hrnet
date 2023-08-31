@@ -119,6 +119,7 @@ const CreateEmployee = () => {
         <FormInput
           id="firstname"
           label="First Name"
+          placeholder="Firstname"
           value={firstName}
           onChange={(e) => handleInputChange(e, setFirstName, "firstName")}
           isInvalid={formErrors.firstName}
@@ -126,6 +127,7 @@ const CreateEmployee = () => {
         <FormInput
           id="lastname"
           label="Last Name"
+          placeholder="Lastname"
           value={lastName}
           onChange={(e) => handleInputChange(e, setLastName, "lastName")}
           isInvalid={formErrors.lastName}

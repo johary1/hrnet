@@ -5,6 +5,10 @@
   align-items: center;
 }
 
+.form-label {
+  color: var(--white);
+}
+
 @media (min-width: 415px) {
   .form {
     border: 1px solid var(--white);
